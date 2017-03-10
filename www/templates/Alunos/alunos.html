@@ -1,0 +1,114 @@
+<ion-view cache-view="false" view-title="Alunos" ng-controller="alunosCtrl as vm">
+  <div ng-if="!vm.isCreating && !vm.isEditing">
+  <ion-content>
+    <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="Pesquise por aluno, responsável ou turma." ng-model="searchText">
+    </label>
+    <ion-list ng-repeat="object in vm.data | filter:searchText">
+      <ion-item class="item-remove-animate item-icon-right"
+           ng-class="{'active':vm.isCurrent(object.id)}">
+            <h2>Nome: {{object.nome}}</h2><h4>Responsável: {{object.__metadata.descriptives.users.label}}</h4>
+            <p>Matrícula: {{object.matricula}}</p>
+            <p>Turma: {{object.__metadata.descriptives.turmas.label}}</p>
+
+            <a ng-click="vm.setEdited(object)" class="button button-light icon ion-compose"></a>
+        <ion-option-button class="button-assertive icon-left ion-trash-b" ng-click="vm.delete(object.id)"></ion-option-button>
+      </ion-item>
+    </ion-list>
+
+    <br><br><br>
+  </ion-content>
+      <a id="tabAdicionar" ng-click="vm.isCreating = true" class="button button-small button-positive ion-person-add"> &nbsp;Adicionar Aluno</a>
+  </div>
+
+
+<div ng-if="vm.isCreating">
+<!--Criar-->
+
+  <ion-content>
+    <div class="bar bar-header">
+        <h2 class="title">&nbsp; &nbsp; Insira os dados do Aluno</h2>
+        <i ng-click="vm.cancelCreate()" class="cancel-create">Cancelar</i>
+    </div>
+    <br><br>
+		<form  name="createForm" ng-submit="createForm.$valid && vm.create(vm.newObject)" novalidate>
+      <div class="id" ng-bind="vm.newObject.user = vm.newObject.users"></div>
+      <div class="id" ng-bind="vm.newObject.turma = vm.newObject.turmas"></div>
+		<div class="list card">
+			<label class="item item-input item-floating-label" ng-class="{ 'has-error': createForm.matricula.$invalid }">
+				<span class="input-label"><b>Matrícula</b></span>
+				<input name="matricula" type="text" ng-minlength="15" ng-maxlength="15" ng-required="true" placeholder="Matrícula" ng-model="vm.newObject.matricula"></input>
+			</label>
+      <div class="form-errors" ng-messages="createForm.matricula.$error">
+        <div class="form-error" ng-message="required">Campo obrigatório</div>
+        <div class="form-error" ng-message="minlength">Matrícula de conter no mínimo 15 caracteres</div>
+        <div class="form-error" ng-message="maxlength">Matrícula de conter no máximo 15 caracteres</div>
+      </div>
+      <label class="item item-input item-select">
+        <span class="input-label">Responsável</span>
+        <select ng-required="true" ng-model="vm.newObject.users">
+          <option ng-repeat="object in vm.userResp | filter: {tipo:'Responsavel'}" value="{{object.id}}">{{object.firstName}}&nbsp;{{object.lastName}}</option>
+        </select>
+      </label>
+
+			<label class="item item-input item-floating-label" ng-class="{ 'has-error': createForm.nome.$invalid }">
+				<span class="input-label"><b>Nome</b></span>
+				<input name="nome" type="text" placeholder="Nome" ng-required="true" ng-model="vm.newObject.nome"/>
+			</label>
+      <div class="form-errors" ng-messages="createForm.nome.$error">
+        <div class="form-error" ng-message="required">Campo obrigatório</div>
+      </div>
+      <label class="item item-input item-select">
+        <span class="input-label">Turma</span>
+        <select ng-required="true" ng-model="vm.newObject.turmas" >
+          <option ng-repeat="object in vm.dadoTurmas" value="{{object.id}}">{{object.turma}}</option>
+        </select><br>
+      </label>
+		</form>
+      <h4 class="form-error" ng-show="createForm.$error.required">Informe todos os campos!</h4>
+			<div class="padding">
+				<button class="button button-block button-positive" ng-show='createForm.$valid' type="submit">Salvar</button>
+			</div>
+
+		</div>
+	</ion-content>
+</ion-view>
+
+</div>
+<div ng-if="vm.isEditing && !vm.isCreating">
+
+<ion-content>
+<!--Editar-->
+  <div class="bar bar-header">
+      <h1 class="title">&nbsp; &nbsp; {{vm.edited.nome}}</h1>
+      <span ng-click="vm.cancelEditing()" class="cancel-create">Cancelar</span>
+  </div>
+  <br><br>
+  <form name="editForm" ng-submit="editForm.$valid && vm.update(vm.edited)" novalidate>
+  <div class="list card">
+    <label class="item item-input item-floating-label" ng-class="{ 'has-error': editForm.matricula.$invalid }">
+      <span class="input-label"><b>Matrícula</b></span>
+      <input name="matricula" type="text" ng-minlength="15" ng-maxlength="15" ng-required="true" placeholder="Matrícula" ng-model="vm.edited.matricula"></input>
+    </label>
+    <div class="form-errors" ng-messages="editForm.matricula.$error">
+      <div class="form-error" ng-message="required">Campo obrigatório</div>
+      <div class="form-error" ng-message="minlength">Matrícula de conter no mínimo 15 caracteres</div>
+      <div class="form-error" ng-message="maxlength">Matrícula de conter no máximo 15 caracteres</div>
+    </div>
+    <label class="item item-input item-floating-label" ng-class="{ 'has-error': editForm.nome.$invalid }">
+      <span class="input-label"><b>Nome</b></span>
+      <input ng-required="true" name="nome" type="text" placeholder="Nome" ng-model="vm.edited.nome"></input>
+    </label>
+    <div class="form-errors" ng-messages="editForm.nome.$error">
+      <div class="form-error" ng-message="required">Campo obrigatório</div>
+    </div>
+  </form>
+    <h4 class="form-error" ng-show="editForm.$error.required">Informe todos os campos!</h4>
+    <div class="padding">
+      <button class="button button-block button-positive" ng-show='editForm.$valid' type="submit">Salvar</button>
+    </div>
+  </div>
+</ion-content>
+
+</div>

@@ -1,0 +1,78 @@
+<ion-view cache-view="false" view-title="Funcionários" ng-controller="userFuncioCtrl as vm">
+  <div ng-if="!vm.isEditing">
+  <ion-content>
+    <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="Digite o Nome" ng-model="searchText">
+    </label>
+  <div class="item item-divider">Professores</div>
+    <ion-list show-reorder="reordering">
+      <ion-item href="#/menu/FuncioID/{{object.id}}" class="item-icon-right" ng-repeat="object in vm.data | filter: {tipo: 'Professor'} | filter: searchText"
+           ng-class="{'active':vm.isCurrent(object.id)}">
+            <h2>Nome: {{object.firstName}}</h2>
+            <p>Função: {{object.tipo}}</p>
+            <a ng-click="vm.setEdited(object)" class="button button-light icon ion-compose"></a>
+        <ion-option-button class="button-assertive icon-left ion-trash-b" ng-click="vm.delete(object.id)"></ion-option-button>
+      </ion-item>
+    </ion-list>
+    <div class="item item-divider">Coordenadores</div>
+    <ion-list show-reorder="reordering">
+      <ion-item href="#/menu/FuncioID/{{object.id}}" class="item-icon-right" ng-repeat="object in vm.data | filter: {tipo:'Coordenador'} | filter: searchText"
+           ng-class="{'active':vm.isCurrent(object.id)}">
+            <h2>Nome: {{object.firstName}}</h2>
+            <p>Função: {{object.tipo}}</p>
+            <a ng-click="vm.setEdited(object)" class="button button-light icon ion-compose"></a>
+        <ion-option-button class="button-assertive icon-left ion-trash-b" ng-click="vm.delete(object.id)"></ion-option-button>
+      </ion-item>
+    </ion-list>
+
+    <br><br><br>
+  </ion-content>
+
+    <a id="tabAdicionar" ui-sref="menu.CriarFuncio" class="button button-small button-positive ion-person-add"> &nbsp;Adicionar Funcionário</a>
+  </div>
+
+
+<div ng-if="vm.isEditing">
+
+<ion-content>
+<!--Editar-->
+  <div class="bar bar-header">
+      <h1 class="title"> {{vm.edited.firstName}}&nbsp;{{vm.edited.lastName}}</h1>
+      <span ng-click="vm.cancelEditing()" class="cancel-create">Cancelar</span>
+  </div>
+  <br><br>
+  <form name="editForm" role="form" ng-submit="vm.update(vm.edited)" novalidate>
+  <div class="list card">
+    <!--<div class="item item-input item-floating-label">
+      <span name="textCpf" class="input-label" >CPF</span>
+      <input type="text" ng-minlength="11" ng-maxlength="11" ng-required="true" placeholder="CPF" ng-model="vm.edited.cpf"></input>
+        <h4 class="form-error" ng-show="editForm.$error.required">CPF Obrigatório!</h4>
+        <h4 class="form-error" ng-show="editForm.$error.maxlength">Digite um CPF válido!</h4>
+        <h4 class="form-error" ng-show="editForm.$error.minlength"></h4>
+    </div>-->
+
+    <div class="item item-input item-floating-label">
+      <span class="input-label">Nome</span>
+      <input type="text" placeholder="Nome" ng-model="vm.edited.firstName"/>
+    </div>
+    <div class="item item-input item-floating-label">
+      <span class="input-label">Sobrenome</span>
+      <input type="text" placeholder="Sobrenome" ng-model="vm.edited.lastName"/>
+    </div>
+    <!--<div class="item item-input item-select">
+      <span class="input-label">Função</span>
+      <select ng-model="vm.tipo">
+        <option selected>Professor</option>
+        <option>Coordenador</option>
+      </select>
+    </div>-->
+    <div class="padding">
+      <button class="button button-block button-positive" ng-show='editForm.$valid' type="submit">Salvar</button>
+    </div>
+    </form>
+  </div>
+</ion-content>
+
+</div>
+</ion-view>
